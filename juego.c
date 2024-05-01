@@ -3,6 +3,7 @@
 int main(){
 
     char respuesta_jugador;
+    juego_t juego;
 
     printf("\nBienvenido jugador! Su mision es ayudar al Agente P que debe salvar a la feria de la ciudad desactivando las bombas del malvado Dr. Doofenshmirtz.\n Pero tengan cuidado,  la familia del Agente P esta en la feria tambien, por ende debe hacerlo siempre y cuando su identidad se mantenga oculta. \n Buena suerte Agentes... ");
 
@@ -13,9 +14,6 @@ int main(){
     printf("\n¿Queres salvar el mundo con el Agente P? Responde S para SI o N para NO si queres jugar \n");
     scanf(" %c", &respuesta_jugador);
 
-    juego_t juego;
-
-    
 
     inicializar_juego(&juego);
 

@@ -14,24 +14,22 @@ coordenada_t asignar_posicion(){
 }
 
 void verificar_camuflaje(bool esta_camuflado){
-    if (esta_camuflado)
-    {
+    if (esta_camuflado == true){
         printf("\nCamuflaje: Activado\n");
     }
-    else
-    {
+    else{
         printf("\nCamuflaje: Desactivado\n");
     }
     
 }
 
-void inicializar_personaje(personaje_t* personaje){
+void inicializar_personaje(juego_t* juego){
     srand((unsigned)time(NULL));
 
-    personaje->vida = 3;
-    personaje->energia = 100;
-    personaje->camuflado = false;
-    personaje->posicion = asignar_posicion();
+    juego->perry.vida = 3;
+    juego->perry.energia = 100;
+    juego->perry.camuflado = false;
+    juego->perry.posicion = asignar_posicion();
 }
 
 void inicializar_bombas(bomba_t* bombas, personaje_t* personaje, juego_t* juego){
@@ -104,7 +102,7 @@ void inicializar_familiares(familiar_t * familiares, herramienta_t* herramientas
 
 void inicializar_juego(juego_t* juego){
 
-    inicializar_personaje(&juego->perry);
+    inicializar_personaje(juego);
     inicializar_bombas(juego->bombas, &(juego->perry), juego);
     inicializar_herramientas(&(juego->herramientas), &(juego->bombas), &(juego->perry), juego);
     inicializar_familiares(&(juego->familiares), &(juego->herramientas), &(juego->bombas), &(juego->perry), juego);
@@ -159,56 +157,83 @@ void imprimir_terreno(juego_t juego){
 
 
 
+void camuflar_personaje(juego_t* juego){
 
-
-
-void camuflar_personaje(juego_t juego){
-    if (juego.perry.camuflado == false){
-        juego.perry.camuflado == true;
+    if (juego->perry.camuflado == false){
+        juego->perry.camuflado = true;
     }
+
+    else if(juego->perry.camuflado == true){
+        juego->perry.camuflado = false;
+    }
+
     else{
-        juego.perry.camuflado == false;
+        printf("No hice absolutamente nada");
     }
     
+    verificar_camuflaje(juego->perry.camuflado);
 }
 
+
 void realizar_jugada(juego_t* juego, char accion){
+
     printf("\nFila del agente: %d -- Col del agente: %d\n", juego->perry.posicion.fil, juego->perry.posicion.col);
-    if (juego->perry.posicion.fil <= 20 && juego->perry.posicion.col <= 20){
-        switch (accion){
+
+    if (juego->perry.posicion.fil < 20 && juego->perry.posicion.fil >= 0 && juego->perry.posicion.col < 20 && juego->perry.posicion.col >= 0)
+
+    switch (accion){
             case 'W':
-                juego->perry.posicion.fil -= 1;
-                imprimir_terreno(*juego);
-                break;
+                if (juego->perry.posicion.fil > 0){
+
+                    juego->perry.posicion.fil -= 1;
+                    imprimir_terreno(*juego);
+                }
+                else{
+                    printf("\nTE VAS A SALIR DEL MAPA AGENTE P Y NO TE LO VOY A PERMITIR\n");
+                    imprimir_terreno(*juego);
+                }
+            break;
 
             case 'A':
-                juego->perry.posicion.col -= 1;
-                imprimir_terreno(*juego);
-                break;
+                if (juego->perry.posicion.col > 0){
+
+                    juego->perry.posicion.col -= 1;
+                    imprimir_terreno(*juego);
+                }
+                else{
+                    printf("\nTE VAS A SALIR DEL MAPA AGENTE P Y NO TE LO VOY A PERMITIR\n");
+                    imprimir_terreno(*juego);
+                }
+            break;
 
             case 'S':
-                juego->perry.posicion.fil += 1;
-                imprimir_terreno(*juego);
-                break;
+                if (juego->perry.posicion.fil < 19){
+
+                    juego->perry.posicion.fil += 1;
+                    imprimir_terreno(*juego);
+                }
+                else{
+                    printf("\nTE VAS A SALIR DEL MAPA AGENTE P Y NO TE LO VOY A PERMITIR\n");
+                    imprimir_terreno(*juego);
+                }
+            break;
 
             case 'D':
-                juego->perry.posicion.col += 1;
-                imprimir_terreno(*juego);
-                break;
+                if (juego->perry.posicion.col < 19){
+
+                    juego->perry.posicion.col += 1;
+                    imprimir_terreno(*juego);
+                }
+                else{
+                    printf("\nTE VAS A SALIR DEL MAPA AGENTE P Y NO TE LO VOY A PERMITIR\n");
+                    imprimir_terreno(*juego);
+                }
+            break;
 
             case 'Q':
-                camuflar_personaje(*juego);
+                camuflar_personaje(juego);
                 imprimir_terreno(*juego);
-                break;
-            
-            default:
-                printf("\nMovimiento NO EXISTENTE! Elegi otro movimiento para el Agente P\n");
-                imprimir_terreno(*juego);
-                break;
-        }
+            break;
     }
-    else{
-        printf("\nNo podes salirte del mapa! Elegi otro movimiento!\n");
-        imprimir_terreno(*juego);
-    }
+    
 }
