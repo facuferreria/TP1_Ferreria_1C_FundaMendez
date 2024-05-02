@@ -17,6 +17,8 @@ int main(){
 
     inicializar_juego(&juego);
 
+    imprimir_terreno(juego);
+
 
     printf("\nPor favor elija una tecla para ejecutar una accion del Agente P\n");
     scanf("%c", &respuesta_jugador);

@@ -6,12 +6,26 @@
 #define FILAS 20
 #define COLUMNAS 20
 
+/*
+PRE CONDICIONES:
+    - Asignara posicion de manera aleatoria con funcion rand
+POS CONDICIONES:
+    - Retorna coordenadas con la estructura del struct coordenada_t
+*/
 coordenada_t asignar_posicion(){
     coordenada_t posicion;
     posicion.col = rand() % 20;
     posicion.fil = rand() % 20;
     return posicion;
 }
+
+
+/*
+PRE CONDICIONES:
+    - Verificara el estado de Perry para saber si esta camuflado o no
+POS CONDICIONES:
+    - Se le pasa un booleano como parametro y en base a el, dependiendo que sea, devolvera el estado actual de si Perry esta camuflado
+*/
 
 void verificar_camuflaje(bool esta_camuflado){
     if (esta_camuflado == true){
@@ -23,6 +37,14 @@ void verificar_camuflaje(bool esta_camuflado){
     
 }
 
+
+/*
+PRE CONDICIONES:
+    - Inicializara los datos de Perry cargando su info inicial, asignando posicion inicial, etc.
+POS CONDICIONES:
+    - Se pasa por refrencia el struct juego de tipo juego_t y en base a eso se actualiza el struct de Perry
+*/
+
 void inicializar_personaje(juego_t* juego){
     srand((unsigned)time(NULL));
 
@@ -31,6 +53,14 @@ void inicializar_personaje(juego_t* juego){
     juego->perry.camuflado = false;
     juego->perry.posicion = asignar_posicion();
 }
+
+
+/*
+PRE CONDICIONES:
+    - Inicializara los datos de las bombas cargando su info inicial, asignando su posicion inicial, etc.
+POS CONDICIONES:
+    - Se pasa por refrencia el struct juego de tipo juego_t, de lemeentos anteriormente inicializados y en base a eso se actualiza el struct de cada bomba
+*/
 
 void inicializar_bombas(bomba_t* bombas, personaje_t* personaje, juego_t* juego){
     srand((unsigned)time(NULL));
@@ -48,6 +78,14 @@ void inicializar_bombas(bomba_t* bombas, personaje_t* personaje, juego_t* juego)
         juego->bombas[i].desactivada = false;
     }    
 }
+
+
+/*
+PRE CONDICIONES:
+    - Inicializara los datos de las herramientas cargando su info inicial, asignando su posicion inicial, etc.
+POS CONDICIONES:
+    - Se pasa por refrencia el struct juego de tipo juego_t, de elementos anteriormente incializados y en base a eso se actualiza el struct de cada herramienta
+*/
 
 void inicializar_herramientas(herramienta_t* herramientas, bomba_t* bombas, personaje_t* personaje, juego_t* juego){
     srand((unsigned)time(NULL));
@@ -71,6 +109,13 @@ void inicializar_herramientas(herramienta_t* herramientas, bomba_t* bombas, pers
     }    
 }
 
+
+/*
+PRE CONDICIONES:
+    - Inicializara los datos de los familiares de Perry cargando su info inicial, asignando su posicion inicial, etc.
+POS CONDICIONES:
+    - Se pasa por refrencia el struct juego de tipo juego_t, de elementos anteriormente incializados y en base a eso se actualiza el struct de cada familiar
+*/
 
 void inicializar_familiares(familiar_t * familiares, herramienta_t* herramientas, bomba_t* bombas, personaje_t* personaje, juego_t* juego){
     srand((unsigned)time(NULL));
@@ -100,16 +145,29 @@ void inicializar_familiares(familiar_t * familiares, herramienta_t* herramientas
     }    
 }
 
+
+/*
+PRE CONDICIONES:
+    - En feria.h ya se aclararon
+POS CONDICIONES:
+    - Se pasa por refrencia el struct juego de tipo juego_t y se actualiza el struct completo de juego inicializando a Perry, las bombas, herramientas, etc.
+*/
+
 void inicializar_juego(juego_t* juego){
 
     inicializar_personaje(juego);
     inicializar_bombas(juego->bombas, &(juego->perry), juego);
     inicializar_herramientas(&(juego->herramientas), &(juego->bombas), &(juego->perry), juego);
     inicializar_familiares(&(juego->familiares), &(juego->herramientas), &(juego->bombas), &(juego->perry), juego);
-
-    imprimir_terreno(*juego);
 }
 
+
+/*
+PRE CONDICIONES:
+    - En feria.h ya se aclararon
+POS CONDICIONES:
+    - Se pasa como parametro el struct juego de tipo juego_t y se muestra por pantalla el terreno actualizado junto con sus datos de valor
+*/
 
 void imprimir_terreno(juego_t juego){
 
@@ -122,26 +180,21 @@ void imprimir_terreno(juego_t juego){
     }
     
    
-    //Asignamos primero posicion en terreno a perry
     terreno[juego.perry.posicion.fil][juego.perry.posicion.col] = 'P';
 
 
-    //Asignamos las bombas
     for (int i = 0; i < juego.tope_bombas; i++){
         terreno[juego.bombas[i].posicion.fil][juego.bombas[i].posicion.col]= 'B'; 
     }
 
-    //Asignamos herramientas
     for (int i = 0; i < juego.tope_herramientas; i++){
         terreno[juego.herramientas[i].posicion.fil][juego.herramientas[i].posicion.col] = juego.herramientas->tipo;
     }
 
-    //Asignamos familiares
     for (int i = 0; i < juego.tope_familiares; i++){
         terreno[juego.familiares[i].posicion.fil][juego.familiares[i].posicion.col] = juego.familiares->inicial_nombre;
     }
 
-    //imprimo mi matriz con los elementos en el terreno ya sin repetir
     for (int i = 0; i < FILAS; i++) {
         for (int j = 0; j < COLUMNAS; j++) {
             printf("%c ", terreno[i][j]);
@@ -149,37 +202,39 @@ void imprimir_terreno(juego_t juego){
         printf("\n");
     }
 
-    //Imprimo datos de Perry
     printf("\nVidas de Perry: %d\n", juego.perry.vida);
     printf("\nVidas de Perry: %d\n", juego.perry.energia);
     verificar_camuflaje(juego.perry.camuflado);
 }
 
 
+/*
+PRE CONDICIONES:
+    - Se cambiara el estado de camuflaje de Perry en base a si estaba camuflado o no
+POS CONDICIONES:
+    - Se pasa por refrencia el struct juego de tipo juego_t y se actualiza el estado de camuflaje de Perry
+*/
 
 void camuflar_personaje(juego_t* juego){
 
     if (juego->perry.camuflado == false){
         juego->perry.camuflado = true;
     }
-
-    else if(juego->perry.camuflado == true){
+    else{
         juego->perry.camuflado = false;
     }
-
-    else{
-        printf("No hice absolutamente nada");
-    }
-    
-    verificar_camuflaje(juego->perry.camuflado);
 }
 
 
+
+/*
+PRE CONDICIONES:
+    - En feria.h ya se aclararon
+POS CONDICIONES:
+    - Se pasa por refrencia el struct juego de tipo juego_t y la accion del usuario de tipo char. Luego, se ejecuta la accion en base a la entrada del usuario
+*/
+
 void realizar_jugada(juego_t* juego, char accion){
-
-    printf("\nFila del agente: %d -- Col del agente: %d\n", juego->perry.posicion.fil, juego->perry.posicion.col);
-
-    if (juego->perry.posicion.fil < 20 && juego->perry.posicion.fil >= 0 && juego->perry.posicion.col < 20 && juego->perry.posicion.col >= 0)
 
     switch (accion){
             case 'W':
@@ -236,4 +291,30 @@ void realizar_jugada(juego_t* juego, char accion){
             break;
     }
     
+}
+
+
+
+/*
+PRE CONDICIONES:
+    - En feria.h ya se aclararon
+POS CONDICIONES:
+    - Se pasa como parametro el juego de tipo juego_t y se retorn un int que nos determina el estado actual del juego
+*/
+
+int estado_juego(juego_t juego){
+
+    int estado_actual;
+
+    for (int i = 0; i < juego.tope_bombas; i++){
+        if (juego.bombas[i].desactivada == true && juego.perry.vida > 0){
+            estado_actual = 1;
+        }
+        else if (juego.perry.vida <= 0){
+            estado_actual = -1;
+        }
+        else{
+            estado_actual = 0;
+        }
+    }
 }
