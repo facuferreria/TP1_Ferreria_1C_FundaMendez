@@ -97,7 +97,7 @@ void inicializar_herramientas(herramienta_t* herramientas, bomba_t* bombas, pers
         do
         {
             juego->herramientas[i].posicion = asignar_posicion();
-        } while (herramientas->posicion.fil == bombas->posicion.fil && herramientas->posicion.col == bombas->posicion.col || herramientas->posicion.fil == personaje->posicion.fil && herramientas->posicion.col == personaje->posicion.col);
+        } while ((herramientas->posicion.fil == bombas->posicion.fil && herramientas->posicion.col == bombas->posicion.col) || (herramientas->posicion.fil == personaje->posicion.fil && herramientas->posicion.col == personaje->posicion.col));
         
         if (i < 5){ 
             juego->herramientas[i].tipo = 'G';
@@ -127,7 +127,7 @@ void inicializar_familiares(familiar_t * familiares, herramienta_t* herramientas
          do
         {
             juego->familiares[i].posicion = asignar_posicion();
-        } while (familiares->posicion.fil == bombas->posicion.fil && familiares->posicion.col == bombas->posicion.col || familiares->posicion.fil == personaje->posicion.fil && familiares->posicion.col == personaje->posicion.col || familiares->posicion.fil == herramientas->posicion.fil && familiares->posicion.col == herramientas->posicion.col);
+        } while ((familiares->posicion.fil == bombas->posicion.fil && familiares->posicion.col == bombas->posicion.col) || (familiares->posicion.fil == personaje->posicion.fil && familiares->posicion.col == personaje->posicion.col) || (familiares->posicion.fil == herramientas->posicion.fil && familiares->posicion.col == herramientas->posicion.col));
         
         if (i ==  0){ 
             juego->familiares[i].inicial_nombre = 'H';
@@ -157,8 +157,8 @@ void inicializar_juego(juego_t* juego){
 
     inicializar_personaje(juego);
     inicializar_bombas(juego->bombas, &(juego->perry), juego);
-    inicializar_herramientas(&(juego->herramientas), &(juego->bombas), &(juego->perry), juego);
-    inicializar_familiares(&(juego->familiares), &(juego->herramientas), &(juego->bombas), &(juego->perry), juego);
+    inicializar_herramientas(juego->herramientas, juego->bombas, &(juego->perry), juego);
+    inicializar_familiares(juego->familiares, juego->herramientas, juego->bombas, &(juego->perry), juego);
 }
 
 
@@ -317,4 +317,6 @@ int estado_juego(juego_t juego){
             estado_actual = 0;
         }
     }
+
+    return estado_actual;
 }
