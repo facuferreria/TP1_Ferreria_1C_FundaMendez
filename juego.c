@@ -3,7 +3,6 @@
 #include <time.h> // Para obtener una semilla desde el reloj
 #include "feria.h"
 
-
 /*
 PRE CONDICIONES:
     - Pasar como parametro un dato de tipo bool
@@ -36,6 +35,8 @@ void imprimir_datos(juego_t juego){
 
 
 int main(){
+
+    srand((unsigned)time(NULL));
     
     juego_t juego;
 
@@ -53,7 +54,7 @@ int main(){
     scanf(" %c", &respuesta_jugador);
 
     while (juego_terminado == 0){
-    
+
         realizar_jugada(&juego, respuesta_jugador); 
 
         imprimir_terreno(juego);

@@ -13,6 +13,7 @@
 
 const char PERRY = 'P';
 const char BOMBAS = 'B';
+const char HERRAMIENTAS = 'T';
 const char GOLOSINAS = 'G';
 const char SOMBREROS = 'S';
 const char PHINEAS = 'H';
@@ -51,13 +52,14 @@ POS CONDICIONES:
     - Inicializa el struct de Perry
 */
 
-void inicializar_personaje(juego_t* juego){
-    srand((unsigned)time(NULL));
+void inicializar_personaje(juego_t* juego, char matriz_aux[FILAS][COLUMNAS]){
 
     juego->perry.vida = 3;
     juego->perry.energia = 100;
     juego->perry.camuflado = false;
     juego->perry.posicion = asignar_posicion();
+
+    matriz_aux[juego->perry.posicion.fil][juego->perry.posicion.col] = PERRY;
 }
 
 
@@ -68,18 +70,20 @@ POS CONDICIONES:
     - Inicializa todas las bombas del vector bombas.
 */
 
-void inicializar_bombas(bomba_t* bombas, juego_t* juego){
-    srand((unsigned)time(NULL));
+void inicializar_bombas(bomba_t* bombas, juego_t* juego, char matriz_aux[FILAS][COLUMNAS]){
 
     juego->tope_bombas = TOPE_BOMBAS;
 
     for (int i = 0; i < juego->tope_bombas; i++){
 
         juego->bombas[i].posicion = asignar_posicion();
-
-        while (juego->bombas[i].posicion.fil == juego->perry.posicion.fil && juego->bombas[i].posicion.col == juego->perry.posicion.col){
+        
+        while (matriz_aux[juego->bombas[i].posicion.fil][juego->bombas[i].posicion.col] != '.'){
             juego->bombas[i].posicion = asignar_posicion();
         }
+
+        matriz_aux[juego->bombas[i].posicion.fil][juego->bombas[i].posicion.col] = BOMBAS;
+
         
         juego->bombas[i].timer = rand() % 250 + 50;
         juego->bombas[i].desactivada = false;
@@ -94,31 +98,20 @@ POS CONDICIONES:
     - Inicializa todas las herramientas del vector herramientas.
 */
 
-void inicializar_herramientas(herramienta_t* herramientas, juego_t* juego){
-    srand((unsigned)time(NULL));
+void inicializar_herramientas(herramienta_t* herramientas, juego_t* juego,  char matriz_aux[FILAS][COLUMNAS]){
 
     juego->tope_herramientas = TOPE_HERRAMIENTAS;
 
     for (int i = 0; i < juego->tope_herramientas; i++){
 
-        bool posiciones_iguales = true;
+        juego->herramientas[i].posicion = asignar_posicion();
 
-        while(posiciones_iguales){
-
+        while (matriz_aux[juego->herramientas[i].posicion.fil][juego->herramientas[i].posicion.col] != '.'){
             juego->herramientas[i].posicion = asignar_posicion();
-            posiciones_iguales = false;
-
-            for (int j = 0; j < juego->tope_bombas; j++){
-
-                if ((juego->herramientas[i].posicion.fil == juego->bombas[j].posicion.fil && juego->herramientas[i].posicion.col == juego->bombas[j].posicion.col)){
-                    posiciones_iguales = true;
-                }
-
-                if (juego->herramientas[i].posicion.fil == juego->perry.posicion.fil && juego->herramientas[i].posicion.col == juego->perry.posicion.col){
-                    posiciones_iguales = true;
-                }
-            }
         }
+
+        matriz_aux[juego->herramientas[i].posicion.fil][juego->herramientas[i].posicion.col] = HERRAMIENTAS;
+
         
         if (i < TOPE_GOLOSINAS){ 
             juego->herramientas[i].tipo = GOLOSINAS;
@@ -138,41 +131,23 @@ POS CONDICIONES:
     - Inicializa todas los familiares del vector familiares.
 */
 
-void inicializar_familiares(familiar_t * familiares, juego_t* juego){
+void inicializar_familiares(familiar_t * familiares, juego_t* juego,  char matriz_aux[FILAS][COLUMNAS]){
     srand((unsigned)time(NULL));
 
     juego->tope_familiares = TOPE_FAMILIARES;
 
     for (int i = 0; i < juego->tope_familiares; i++){
 
-        bool posiciones_iguales = true;
+        juego->familiares[i].posicion = asignar_posicion();
 
-        while(posiciones_iguales){
 
+        while (matriz_aux[juego->familiares[i].posicion.fil][juego->familiares[i].posicion.col] != '.'){
             juego->familiares[i].posicion = asignar_posicion();
-            posiciones_iguales = false;
-
-            for (int j = 0; j < juego->tope_bombas; j++){
-
-                if ((juego->familiares[i].posicion.fil == juego->bombas[j].posicion.fil && juego->familiares[i].posicion.col == juego->bombas[j].posicion.col)){
-                    posiciones_iguales = true;
-                }
-            }
-
-            for (int k = 0; k < juego->tope_herramientas; k++){
-
-                if ((juego->familiares[i].posicion.fil == juego->herramientas[k].posicion.fil && juego->familiares[i].posicion.col == juego->herramientas[k].posicion.col)){
-                    posiciones_iguales = true;
-                }
-            }
-
-            if ((juego->familiares[i].posicion.fil == juego->perry.posicion.fil && juego->familiares[i].posicion.col == juego->perry.posicion.col)){
-                    posiciones_iguales = true;
-            }
-
         }
 
-        
+
+        matriz_aux[juego->familiares[i].posicion.fil][juego->familiares[i].posicion.col] = HERRAMIENTAS;
+
         
         if (i ==  0){ 
             juego->familiares[i].inicial_nombre = PHINEAS;
@@ -201,10 +176,18 @@ POS CONDICIONES:
 
 void inicializar_juego(juego_t* juego){
 
-    inicializar_personaje(juego);
-    inicializar_bombas(juego->bombas, juego);
-    inicializar_herramientas(juego->herramientas, juego);
-    inicializar_familiares(juego->familiares, juego);
+    char matriz_aux[FILAS][COLUMNAS];
+
+    for(int i = 0; i < FILAS; i++) {
+        for (int j = 0; j < COLUMNAS; j++) {
+            matriz_aux[i][j] = '.';
+        }
+    }
+
+    inicializar_personaje(juego, matriz_aux);
+    inicializar_bombas(juego->bombas, juego, matriz_aux);
+    inicializar_herramientas(juego->herramientas, juego, matriz_aux);
+    inicializar_familiares(juego->familiares, juego, matriz_aux);
 }
 
 
