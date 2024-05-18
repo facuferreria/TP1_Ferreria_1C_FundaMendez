@@ -27,6 +27,9 @@ const int TOPE_BOMBAS = 10;
 const int TOPE_GOLOSINAS = 5;
 const int TOPE_HERRAMIENTAS = 8;
 const int TOPE_FAMILIARES = 3;
+
+
+
 /*
 PRE CONDICIONES:
     - Asignara posicion de manera aleatoria con funcion rand
@@ -45,7 +48,7 @@ coordenada_t asignar_posicion(){
 PRE CONDICIONES:
     - Inicializara los datos de Perry cargando su info inicial, asignando posicion inicial, etc.
 POS CONDICIONES:
-    - Se pasa por refrencia el struct juego de tipo juego_t y en base a eso se actualiza el struct de Perry
+    - Inicializa el struct de Perry
 */
 
 void inicializar_personaje(juego_t* juego){
@@ -62,7 +65,7 @@ void inicializar_personaje(juego_t* juego){
 PRE CONDICIONES:
     - Inicializara los datos de las bombas cargando su info inicial, asignando su posicion inicial, etc.
 POS CONDICIONES:
-    - Se pasa por refrencia el struct juego de tipo juego_t, de lemeentos anteriormente inicializados y en base a eso se actualiza el struct de cada bomba
+    - Inicializa todas las bombas del vector bombas.
 */
 
 void inicializar_bombas(bomba_t* bombas, juego_t* juego){
@@ -88,7 +91,7 @@ void inicializar_bombas(bomba_t* bombas, juego_t* juego){
 PRE CONDICIONES:
     - Inicializara los datos de las herramientas cargando su info inicial, asignando su posicion inicial, etc.
 POS CONDICIONES:
-    - Se pasa por refrencia el struct juego de tipo juego_t, de elementos anteriormente incializados y en base a eso se actualiza el struct de cada herramienta
+    - Inicializa todas las herramientas del vector herramientas.
 */
 
 void inicializar_herramientas(herramienta_t* herramientas, juego_t* juego){
@@ -132,7 +135,7 @@ void inicializar_herramientas(herramienta_t* herramientas, juego_t* juego){
 PRE CONDICIONES:
     - Inicializara los datos de los familiares de Perry cargando su info inicial, asignando su posicion inicial, etc.
 POS CONDICIONES:
-    - Se pasa por refrencia el struct juego de tipo juego_t, de elementos anteriormente incializados y en base a eso se actualiza el struct de cada familiar
+    - Inicializa todas los familiares del vector familiares.
 */
 
 void inicializar_familiares(familiar_t * familiares, juego_t* juego){
@@ -193,7 +196,7 @@ void inicializar_familiares(familiar_t * familiares, juego_t* juego){
 PRE CONDICIONES:
     - En feria.h ya se aclararon
 POS CONDICIONES:
-    - Se pasa por refrencia el struct juego de tipo juego_t y se actualiza el struct completo de juego inicializando a Perry, las bombas, herramientas, etc.
+    - Inicializa todos los datos iniciales del juego
 */
 
 void inicializar_juego(juego_t* juego){
@@ -209,7 +212,7 @@ void inicializar_juego(juego_t* juego){
 PRE CONDICIONES:
     - En feria.h ya se aclararon
 POS CONDICIONES:
-    - Se pasa como parametro el struct juego de tipo juego_t y se muestra por pantalla el terreno actualizado junto con sus datos de valor
+    - Imprime el terreno por pantalla
 */
 
 void imprimir_terreno(juego_t juego){
@@ -251,7 +254,7 @@ void imprimir_terreno(juego_t juego){
 PRE CONDICIONES:
     - Se cambiara el estado de camuflaje de Perry en base a si estaba camuflado o no
 POS CONDICIONES:
-    - Se pasa por refrencia el struct juego de tipo juego_t y se actualiza el estado de camuflaje de Perry
+    - Cambia el estado de camuflaje de Perry
 */
 
 void camuflar_personaje(juego_t* juego){
@@ -270,7 +273,7 @@ void camuflar_personaje(juego_t* juego){
 PRE CONDICIONES:
     - En feria.h ya se aclararon
 POS CONDICIONES:
-    - Se pasa por refrencia el struct juego de tipo juego_t y la accion del usuario de tipo char. Luego, se ejecuta la accion en base a la entrada del usuario
+    - Se realiza una jugada en base a lo que eligio el usuario
 */
 
 void realizar_jugada(juego_t* juego, char accion){

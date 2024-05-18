@@ -7,9 +7,9 @@
 
 /*
 PRE CONDICIONES:
-    - Verificara el estado de Perry para saber si esta camuflado o no
+    - Pasar como parametro un dato de tipo bool
 POS CONDICIONES:
-    - Se le pasa un booleano como parametro y en base a el, dependiendo que sea, devolvera el estado actual de si Perry esta camuflado
+    - Imprime por pantalla el estado de camuflaje
 */
 
 void verificar_camuflaje(bool esta_camuflado){
@@ -23,11 +23,20 @@ void verificar_camuflaje(bool esta_camuflado){
 }
 
 
+/*
+PRE CONDICIONES:
+    - Pasar como parametro el struct juego
+POS CONDICIONES:
+    - Imprimir por pantalla los datos de Perry
+*/
+
+
 void imprimir_datos(juego_t juego){
     printf("\nVidas de Perry: %d\n", juego.perry.vida);
     printf("\nVidas de Perry: %d\n", juego.perry.energia);
     verificar_camuflaje(juego.perry.camuflado);
 }
+
 
 int main(){
 
