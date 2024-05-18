@@ -94,8 +94,6 @@ POS CONDICIONES:
 void inicializar_herramientas(herramienta_t* herramientas, juego_t* juego){
     srand((unsigned)time(NULL));
 
-    bool posiciones_iguales = true;
-
     juego->tope_herramientas = TOPE_HERRAMIENTAS;
 
     for (int i = 0; i < juego->tope_herramientas; i++){
