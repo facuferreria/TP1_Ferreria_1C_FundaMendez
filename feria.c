@@ -32,9 +32,9 @@ const int TOPE_FAMILIARES = 3;
 
 /*
 PRE CONDICIONES:
-    - Asignara posicion de manera aleatoria con funcion rand
+    - No recbe nada coo parametro
 POS CONDICIONES:
-    - Retorna coordenadas con la estructura del struct coordenada_t
+    - Devuelve struct posicion con coordenadas aleatorias
 */
 coordenada_t asignar_posicion(){
     coordenada_t posicion;
@@ -46,7 +46,7 @@ coordenada_t asignar_posicion(){
 
 /*
 PRE CONDICIONES:
-    - Inicializara los datos de Perry cargando su info inicial, asignando posicion inicial, etc.
+    - Pasamos como parametro el struct juego por referencia
 POS CONDICIONES:
     - Inicializa el struct de Perry
 */
@@ -63,7 +63,7 @@ void inicializar_personaje(juego_t* juego){
 
 /*
 PRE CONDICIONES:
-    - Inicializara los datos de las bombas cargando su info inicial, asignando su posicion inicial, etc.
+    - Pasamos como parametro el struct bombas y el struct juego por referencia
 POS CONDICIONES:
     - Inicializa todas las bombas del vector bombas.
 */
@@ -89,7 +89,7 @@ void inicializar_bombas(bomba_t* bombas, juego_t* juego){
 
 /*
 PRE CONDICIONES:
-    - Inicializara los datos de las herramientas cargando su info inicial, asignando su posicion inicial, etc.
+    - Pasamos como parametro el struct herramientas y el struct juego por referencia
 POS CONDICIONES:
     - Inicializa todas las herramientas del vector herramientas.
 */
@@ -133,7 +133,7 @@ void inicializar_herramientas(herramienta_t* herramientas, juego_t* juego){
 
 /*
 PRE CONDICIONES:
-    - Inicializara los datos de los familiares de Perry cargando su info inicial, asignando su posicion inicial, etc.
+    - Pasamos como parametro el struct familiares y el struct juego por referencia
 POS CONDICIONES:
     - Inicializa todas los familiares del vector familiares.
 */
@@ -194,7 +194,7 @@ void inicializar_familiares(familiar_t * familiares, juego_t* juego){
 
 /*
 PRE CONDICIONES:
-    - En feria.h ya se aclararon
+    - 
 POS CONDICIONES:
     - Inicializa todos los datos iniciales del juego
 */
@@ -210,7 +210,7 @@ void inicializar_juego(juego_t* juego){
 
 /*
 PRE CONDICIONES:
-    - En feria.h ya se aclararon
+    - 
 POS CONDICIONES:
     - Imprime el terreno por pantalla
 */
@@ -271,7 +271,7 @@ void camuflar_personaje(juego_t* juego){
 
 /*
 PRE CONDICIONES:
-    - En feria.h ya se aclararon
+    - 
 POS CONDICIONES:
     - Se realiza una jugada en base a lo que eligio el usuario
 */
