@@ -5,7 +5,28 @@
 
 #define FILAS 20
 #define COLUMNAS 20
+#define ARRIBA 'W'
+#define DERECHA 'D'
+#define ABAJO 'S'
+#define IZQUIERDA 'A'
+#define CAMUFLAJE 'Q'
 
+const char PERRY = 'P';
+const char BOMBAS = 'B';
+const char GOLOSINAS = 'G';
+const char SOMBREROS = 'S';
+const char PHINEAS = 'H';
+const char FERB = 'F';
+const char CANDACE = 'C';
+
+const int GANO = 1;
+const int PERDIO = -1;
+const int SIGUE_JUGANDO = 0;
+
+const int TOPE_BOMBAS = 10;
+const int TOPE_GOLOSINAS = 5;
+const int TOPE_HERRAMIENTAS = 8;
+const int TOPE_FAMILIARES = 3;
 /*
 PRE CONDICIONES:
     - Asignara posicion de manera aleatoria con funcion rand
@@ -17,24 +38,6 @@ coordenada_t asignar_posicion(){
     posicion.col = rand() % 20;
     posicion.fil = rand() % 20;
     return posicion;
-}
-
-
-/*
-PRE CONDICIONES:
-    - Verificara el estado de Perry para saber si esta camuflado o no
-POS CONDICIONES:
-    - Se le pasa un booleano como parametro y en base a el, dependiendo que sea, devolvera el estado actual de si Perry esta camuflado
-*/
-
-void verificar_camuflaje(bool esta_camuflado){
-    if (esta_camuflado == true){
-        printf("\nCamuflaje: Activado\n");
-    }
-    else{
-        printf("\nCamuflaje: Desactivado\n");
-    }
-    
 }
 
 
@@ -62,17 +65,18 @@ POS CONDICIONES:
     - Se pasa por refrencia el struct juego de tipo juego_t, de lemeentos anteriormente inicializados y en base a eso se actualiza el struct de cada bomba
 */
 
-void inicializar_bombas(bomba_t* bombas, personaje_t* personaje, juego_t* juego){
+void inicializar_bombas(bomba_t* bombas, juego_t* juego){
     srand((unsigned)time(NULL));
 
-    juego->tope_bombas = 10;
+    juego->tope_bombas = TOPE_BOMBAS;
 
     for (int i = 0; i < juego->tope_bombas; i++){
 
-        do
-        {
+        juego->bombas[i].posicion = asignar_posicion();
+
+        while (juego->bombas[i].posicion.fil == juego->perry.posicion.fil && juego->bombas[i].posicion.col == juego->perry.posicion.col){
             juego->bombas[i].posicion = asignar_posicion();
-        } while (bombas->posicion.fil == personaje->posicion.fil && bombas->posicion.col == personaje->posicion.col);
+        }
         
         juego->bombas[i].timer = rand() % 250 + 50;
         juego->bombas[i].desactivada = false;
@@ -87,24 +91,40 @@ POS CONDICIONES:
     - Se pasa por refrencia el struct juego de tipo juego_t, de elementos anteriormente incializados y en base a eso se actualiza el struct de cada herramienta
 */
 
-void inicializar_herramientas(herramienta_t* herramientas, bomba_t* bombas, personaje_t* personaje, juego_t* juego){
+void inicializar_herramientas(herramienta_t* herramientas, juego_t* juego){
     srand((unsigned)time(NULL));
 
-    juego->tope_herramientas = 8;
+    bool posiciones_iguales = true;
+
+    juego->tope_herramientas = TOPE_HERRAMIENTAS;
 
     for (int i = 0; i < juego->tope_herramientas; i++){
 
-        do
-        {
+        bool posiciones_iguales = true;
+
+        while(posiciones_iguales){
+
             juego->herramientas[i].posicion = asignar_posicion();
-        } while ((herramientas->posicion.fil == bombas->posicion.fil && herramientas->posicion.col == bombas->posicion.col) || (herramientas->posicion.fil == personaje->posicion.fil && herramientas->posicion.col == personaje->posicion.col));
+            posiciones_iguales = false;
+
+            for (int j = 0; j < juego->tope_bombas; j++){
+
+                if ((juego->herramientas[i].posicion.fil == juego->bombas[j].posicion.fil && juego->herramientas[i].posicion.col == juego->bombas[j].posicion.col)){
+                    posiciones_iguales = true;
+                }
+
+                if (juego->herramientas[i].posicion.fil == juego->perry.posicion.fil && juego->herramientas[i].posicion.col == juego->perry.posicion.col){
+                    posiciones_iguales = true;
+                }
+            }
+        }
         
-        if (i < 5){ 
-            juego->herramientas[i].tipo = 'G';
+        if (i < TOPE_GOLOSINAS){ 
+            juego->herramientas[i].tipo = GOLOSINAS;
         } 
         
-        else {
-            juego->herramientas[i].tipo = 'S';
+        else{
+            juego->herramientas[i].tipo = SOMBREROS;
         }
     }    
 }
@@ -117,32 +137,57 @@ POS CONDICIONES:
     - Se pasa por refrencia el struct juego de tipo juego_t, de elementos anteriormente incializados y en base a eso se actualiza el struct de cada familiar
 */
 
-void inicializar_familiares(familiar_t * familiares, herramienta_t* herramientas, bomba_t* bombas, personaje_t* personaje, juego_t* juego){
+void inicializar_familiares(familiar_t * familiares, juego_t* juego){
     srand((unsigned)time(NULL));
 
-    juego->tope_familiares = 3;
+    juego->tope_familiares = TOPE_FAMILIARES;
 
     for (int i = 0; i < juego->tope_familiares; i++){
 
-         do
-        {
+        bool posiciones_iguales = true;
+
+        while(posiciones_iguales){
+
             juego->familiares[i].posicion = asignar_posicion();
-        } while ((familiares->posicion.fil == bombas->posicion.fil && familiares->posicion.col == bombas->posicion.col) || (familiares->posicion.fil == personaje->posicion.fil && familiares->posicion.col == personaje->posicion.col) || (familiares->posicion.fil == herramientas->posicion.fil && familiares->posicion.col == herramientas->posicion.col));
+            posiciones_iguales = false;
+
+            for (int j = 0; j < juego->tope_bombas; j++){
+
+                if ((juego->familiares[i].posicion.fil == juego->bombas[j].posicion.fil && juego->familiares[i].posicion.col == juego->bombas[j].posicion.col)){
+                    posiciones_iguales = true;
+                }
+            }
+
+            for (int k = 0; k < juego->tope_herramientas; k++){
+
+                if ((juego->familiares[i].posicion.fil == juego->herramientas[k].posicion.fil && juego->familiares[i].posicion.col == juego->herramientas[k].posicion.col)){
+                    posiciones_iguales = true;
+                }
+            }
+
+            if ((juego->familiares[i].posicion.fil == juego->perry.posicion.fil && juego->familiares[i].posicion.col == juego->perry.posicion.col)){
+                    posiciones_iguales = true;
+            }
+
+        }
+
+        
         
         if (i ==  0){ 
-            juego->familiares[i].inicial_nombre = 'H';
+            juego->familiares[i].inicial_nombre = PHINEAS;
         } 
 
         else if (i == 1)
         {
-            juego->familiares[i].inicial_nombre = 'F';
+            juego->familiares[i].inicial_nombre = FERB;
         }
         
         
         else {
-            juego->familiares[i].inicial_nombre = 'C';
+            juego->familiares[i].inicial_nombre = CANDACE;
         }
     }    
+
 }
 
 
@@ -156,9 +201,9 @@ POS CONDICIONES:
 void inicializar_juego(juego_t* juego){
 
     inicializar_personaje(juego);
-    inicializar_bombas(juego->bombas, &(juego->perry), juego);
-    inicializar_herramientas(juego->herramientas, juego->bombas, &(juego->perry), juego);
-    inicializar_familiares(juego->familiares, juego->herramientas, juego->bombas, &(juego->perry), juego);
+    inicializar_bombas(juego->bombas, juego);
+    inicializar_herramientas(juego->herramientas, juego);
+    inicializar_familiares(juego->familiares, juego);
 }
 
 
@@ -180,19 +225,19 @@ void imprimir_terreno(juego_t juego){
     }
     
    
-    terreno[juego.perry.posicion.fil][juego.perry.posicion.col] = 'P';
+    terreno[juego.perry.posicion.fil][juego.perry.posicion.col] = PERRY;
 
 
     for (int i = 0; i < juego.tope_bombas; i++){
-        terreno[juego.bombas[i].posicion.fil][juego.bombas[i].posicion.col]= 'B'; 
+        terreno[juego.bombas[i].posicion.fil][juego.bombas[i].posicion.col]= BOMBAS; 
     }
 
     for (int i = 0; i < juego.tope_herramientas; i++){
-        terreno[juego.herramientas[i].posicion.fil][juego.herramientas[i].posicion.col] = juego.herramientas->tipo;
+        terreno[juego.herramientas[i].posicion.fil][juego.herramientas[i].posicion.col] = juego.herramientas[i].tipo;
     }
 
     for (int i = 0; i < juego.tope_familiares; i++){
-        terreno[juego.familiares[i].posicion.fil][juego.familiares[i].posicion.col] = juego.familiares->inicial_nombre;
+        terreno[juego.familiares[i].posicion.fil][juego.familiares[i].posicion.col] = juego.familiares[i].inicial_nombre;
     }
 
     for (int i = 0; i < FILAS; i++) {
@@ -201,10 +246,6 @@ void imprimir_terreno(juego_t juego){
         }
         printf("\n");
     }
-
-    printf("\nVidas de Perry: %d\n", juego.perry.vida);
-    printf("\nVidas de Perry: %d\n", juego.perry.energia);
-    verificar_camuflaje(juego.perry.camuflado);
 }
 
 
@@ -237,57 +278,48 @@ POS CONDICIONES:
 void realizar_jugada(juego_t* juego, char accion){
 
     switch (accion){
-            case 'W':
+            case ARRIBA:
                 if (juego->perry.posicion.fil > 0){
 
                     juego->perry.posicion.fil -= 1;
-                    imprimir_terreno(*juego);
                 }
                 else{
                     printf("\nTE VAS A SALIR DEL MAPA AGENTE P Y NO TE LO VOY A PERMITIR\n");
-                    imprimir_terreno(*juego);
                 }
             break;
 
-            case 'A':
+            case IZQUIERDA:
                 if (juego->perry.posicion.col > 0){
 
                     juego->perry.posicion.col -= 1;
-                    imprimir_terreno(*juego);
                 }
                 else{
                     printf("\nTE VAS A SALIR DEL MAPA AGENTE P Y NO TE LO VOY A PERMITIR\n");
-                    imprimir_terreno(*juego);
                 }
             break;
 
-            case 'S':
+            case ABAJO:
                 if (juego->perry.posicion.fil < 19){
 
                     juego->perry.posicion.fil += 1;
-                    imprimir_terreno(*juego);
                 }
                 else{
                     printf("\nTE VAS A SALIR DEL MAPA AGENTE P Y NO TE LO VOY A PERMITIR\n");
-                    imprimir_terreno(*juego);
                 }
             break;
 
-            case 'D':
+            case DERECHA:
                 if (juego->perry.posicion.col < 19){
 
                     juego->perry.posicion.col += 1;
-                    imprimir_terreno(*juego);
                 }
                 else{
                     printf("\nTE VAS A SALIR DEL MAPA AGENTE P Y NO TE LO VOY A PERMITIR\n");
-                    imprimir_terreno(*juego);
                 }
             break;
 
-            case 'Q':
+            case CAMUFLAJE:
                 camuflar_personaje(juego);
-                imprimir_terreno(*juego);
             break;
     }
     
@@ -304,17 +336,17 @@ POS CONDICIONES:
 
 int estado_juego(juego_t juego){
 
-    int estado_actual;
+    int estado_actual = 0;
 
     for (int i = 0; i < juego.tope_bombas; i++){
         if (juego.bombas[i].desactivada == true && juego.perry.vida > 0){
-            estado_actual = 1;
+            estado_actual = GANO;
         }
         else if (juego.perry.vida <= 0){
-            estado_actual = -1;
+            estado_actual = PERDIO;
         }
         else{
-            estado_actual = 0;
+            estado_actual = SIGUE_JUGANDO;
         }
     }
 
